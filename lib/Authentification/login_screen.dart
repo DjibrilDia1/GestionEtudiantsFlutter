@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gestion_des_etudiants_flut/Authentification/signup.dart';
 import 'package:gestion_des_etudiants_flut/Database/sqlite.dart';
 import 'package:gestion_des_etudiants_flut/Models/students.dart';
+import 'package:gestion_des_etudiants_flut/views/HomeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -55,6 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "L'email est requis";
+                    }
+                    if (!value.contains('@')) {
+                      return "Entrez un email valide";
                     }
                     return null;
                   },
@@ -141,6 +145,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                               // Naviguer vers l'écran principal de l'application
                               // Navigator.pushReplacement(...);
+                              Navigator.pushReplacement(
+                                // ignore: use_build_context_synchronously
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HomeScreen(),
+                                ),
+                              );
                             } else {
                               // ignore: use_build_context_synchronously
                               ScaffoldMessenger.of(context).showSnackBar(

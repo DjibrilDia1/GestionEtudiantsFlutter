@@ -11,11 +11,11 @@ class Students {
     required this.usrEmail,
   });
 
-  factory Students.fromMap(Map<String, dynamic> json) => Students(
-        usrId: json["usrId"],
-        usrName: json["usrName"],
-        usrPassword: json["usrPassword"],
-        usrEmail: json["usrEmail"],
+  factory Students.fromMap(Map<String, dynamic> tab) => Students(
+        usrId: tab["usrId"],
+        usrName: tab["usrName"],
+        usrPassword: tab["usrPassword"],
+        usrEmail: tab["usrEmail"],
       );
 
   Map<String, dynamic> toMap() => {
