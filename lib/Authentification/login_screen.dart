@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestion_des_etudiants_flut/Authentification/signup.dart';
+import 'package:gestion_des_etudiants_flut/Database/sqlite.dart';
+import 'package:gestion_des_etudiants_flut/Models/students.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,12 +13,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _userEmailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isVisible = false;
 
-  @override 
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
@@ -30,43 +32,34 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 // Logo / Image
-                Image.asset(
-                  "lib/assets/login-bg.jpg",
-                  width: size.width * 0.5,
-                ),
+                Image.asset("lib/assets/login-bg.jpg", width: size.width * 0.5),
                 const SizedBox(height: 20),
 
                 Text(
                   "Bienvenue",
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF3AB78D),
-                      ),
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF3AB78D),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   "Connectez-vous pour continuer",
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 15,
-                  ),
+                  style: TextStyle(color: Colors.grey[700], fontSize: 15),
                 ),
                 const SizedBox(height: 30),
 
                 // Champ Email
                 TextFormField(
-                  controller: _emailController,
+                  controller: _userEmailController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "L'email est requis";
                     }
-                    if (!value.contains('@')) {
-                      return "Entrez un email valide";
-                    }
                     return null;
                   },
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.email_outlined),
+                    prefixIcon: const Icon(Icons.person_outline),
                     hintText: "Email",
                     filled: true,
                     fillColor: Colors.grey.shade200,
@@ -126,14 +119,53 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       elevation: 3,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Connexion réussie !"),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
+                        try {
+                          final dbHelper = DatabaseHelper();
+                          final user = Students(
+                            usrEmail: _userEmailController.text.trim(),
+                            usrPassword: _passwordController.text,
+                          );
+
+                          final isLoggedIn = await dbHelper.login(user);
+
+                          if (mounted) {
+                            if (isLoggedIn) {
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Connexion réussie !"),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                              // Naviguer vers l'écran principal de l'application
+                              // Navigator.pushReplacement(...);
+                            } else {
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    "Email ou mot de passe incorrect",
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Erreur lors de la connexion: ${e.toString()}",
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
                       }
                     },
                     child: const Text(
@@ -157,10 +189,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextButton(
                       onPressed: () {
                         // Naviguer vers la page d'inscription
-                         Navigator.pushReplacement(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const Signup(),
+                            builder: (context) => const SignupScreen(),
                           ),
                         );
                       },
