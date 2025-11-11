@@ -206,7 +206,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               SnackBar(
                                 content: Text(
                                   e.toString().contains('UNIQUE constraint')
-                                      ? "Ce nom d'utilisateur existe déjà"
+                                      ? "Cet email existe déjà"
                                       : "Erreur lors de l'inscription: ${e.toString()}",
                                 ),
                                 backgroundColor: Colors.red,

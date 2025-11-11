@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gestion_des_etudiants_flut/Authentification/signup.dart';
 import 'package:gestion_des_etudiants_flut/Database/sqlite.dart';
 import 'package:gestion_des_etudiants_flut/Models/students.dart';
-import 'package:gestion_des_etudiants_flut/views/HomeScreen.dart';
+import 'package:gestion_des_etudiants_flut/views/homescreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

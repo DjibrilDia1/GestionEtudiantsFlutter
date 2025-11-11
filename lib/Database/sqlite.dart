@@ -36,7 +36,6 @@ class DatabaseHelper {
       where: 'usrEmail = ? AND usrPassword = ?',
       whereArgs: [user.usrEmail, user.usrPassword],
     );
-    print(result);
     if (result.isNotEmpty) {
       return true;
     } else {
